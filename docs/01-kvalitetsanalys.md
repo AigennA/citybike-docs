@@ -95,3 +95,5 @@ Hänvisning: K2, avsnitt 2 och 4
 43 200 × 0,003 = 129,6 minuter, alltså ungefär 2 timmar och 10 minuter.
 
 ## 4. Skillnad mot ett annat par
+
+Vi har båda Security som nummer 1, men den största skillnaden är att det andra paret har med Performance efficiency och har Safety sist, medan jag har Safety som nummer 2 och inte har med Performance efficiency alls. Skillnaden beror på att de tänkte mer på hur kunderna upplever appen varje dag (K1), medan jag tänkte mer på vad som är farligast, till exempel att ett batteri kan börja brinna (K8, avsnitt 7). Vi placerade också K2 olika, de valde Reliability och jag valde Functional suitability, och därför finns Functional suitability med i min lista men inte i deras.
