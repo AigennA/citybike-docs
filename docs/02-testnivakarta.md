@@ -2,67 +2,67 @@
 
 ## T1
 Nivå: enhet
-Motivering: Fråga fyra avgör eftersom PriceCalculator testas som ren beräkning enligt P1 och P2 utan databas, nätverk eller användare.
+Motivering: Fråga fyra, för det är bara en prisberäkning utan databas eller nätverk.
 
 ## T2
 Nivå: enhet
-Motivering: Fråga fyra avgör eftersom taket i P3 kontrolleras direkt i PriceCalculator utan några andra delar.
+Motivering: Fråga fyra, för taket i P3 testas direkt i PriceCalculator utan andra delar.
 
 ## T3
 Nivå: integration
-Motivering: Fråga tre avgör eftersom API:et och en riktig SQL Server-databas samverkar, men resten av kedjan (kundapp och styrenhet) är inte med.
+Motivering: Fråga tre, för API:et jobbar med en riktig SQL Server-databas men appen och styrenheten är inte med.
 
 ## T4
 Nivå: enhet
-Motivering: Fråga fyra avgör eftersom upplåsningsklienten är ersatt av en testdubbel, så bara logiken i BookingService körs.
+Motivering: Fråga fyra, för upplåsningsklienten är en testdubbel och bara BookingService testas.
 
 ## T5
 Nivå: system
-Motivering: Fråga två avgör eftersom kedjan går genom kundappen (S1), API:et (S3) och en simulerad styrenhet.
+Motivering: Fråga två, för testet går genom kundappen, API:et och en simulerad styrenhet.
 
 ## T6
 Nivå: acceptans
-Motivering: Fråga ett avgör eftersom det är projektledaren som godkänner resultatet efter att pilotkunder använt appen.
+Motivering: Fråga ett, för projektledaren godkänner efter att pilotkunderna testat.
 
 ## T7
 Nivå: integration
-Motivering: Fråga tre avgör eftersom repositoryt testas mot en riktig SQL Server-databas.
+Motivering: Fråga tre, för repositoryt testas mot en riktig databas.
 
 ## T8
 Nivå: system
-Motivering: Fråga två avgör eftersom hela kartflödet belastas med 500 användare i en driftlik testmiljö.
+Motivering: Fråga två, för hela kartan testas med 500 användare i en driftlik miljö.
 
 ## T9
 Nivå: enhet
-Motivering: Fråga fyra avgör eftersom datumet skickas in som parameter, så testet beror inte på systemklockan eller någon annan del.
+Motivering: Fråga fyra, för datumet skickas in som parameter och inget annat behövs.
 
 ## T10
 Nivå: acceptans
-Motivering: Fråga ett avgör eftersom ekonomiansvarig som beställare godkänner kvittots innehåll och pris.
+Motivering: Fråga ett, för ekonomiansvarig är beställare och godkänner kvittot.
 
 ## T11
 Nivå: integration
-Motivering: Fråga tre avgör eftersom en riktig HTTP-stack med autentisering körs i processen, men övriga systemdelar startas inte.
+Motivering: Fråga tre, för en riktig HTTP-stack körs i processen men inga andra systemdelar startas.
 
 ## T12
 Nivå: system
-Motivering: Fråga två avgör eftersom hela resflödet körs genom alla systemdelar och betaltjänstens testläge i testmiljön.
+Motivering: Fråga två, för hela resan från registrering till betalning körs i testmiljön.
 
 ## T13
 Nivå: enhet
-Motivering: Fråga fyra avgör eftersom EmailValidator bara kontrollerar en textsträng utan beroenden.
+Motivering: Fråga fyra, för EmailValidator kollar bara en text och behöver inget annat.
 
 ## T14
 Nivå: acceptans
-Motivering: Fråga ett avgör eftersom kundtjänst som användare går igenom användarfallen och skriver under ett protokoll.
+Motivering: Fråga ett, för kundtjänst är användare och skriver under att det fungerar.
 
 ## T15
 Nivå: integration
-Motivering: Fråga tre avgör eftersom StationService och databasen samverkar för att räkna fram antalet lediga cyklar.
+Motivering: Fråga tre, för StationService och databasen jobbar tillsammans.
 
 ## T16
 Nivå: system
-Motivering: Fråga två avgör eftersom firmware, verkliga styrenheter (S5) i en testrigg och backend körs tillsammans och upplåsning och positionsrapport kontrolleras hela vägen.
+Motivering: Fråga två, för riktiga styrenheter, firmware och backend testas tillsammans hela vägen.
 
 ## Sammanställning
 Enhet: 5
@@ -70,16 +70,16 @@ Integration: 4
 System: 4
 Acceptans: 3
 
-Fördelningen liknar pyramiden eftersom enhetstesterna är flest och acceptanstesterna färst, men den är mycket plattare än pyramiden; i ett riktigt projekt bör enhetstesterna vara många fler än testerna på de övre nivåerna.
+Det liknar pyramiden lite eftersom enhetstester är flest och acceptanstester minst, men i ett riktigt projekt borde det finnas mycket fler enhetstester.
 
 ## Eget testfall
 Krav: Krav 3: Reliability i docs/01-kvalitetsanalys.md
-Givet: en pågående resa där styrenheten skickar position var 15:e sekund enligt avsnitt 4
-När: styrenhetens mobilnät kopplas bort i 30 minuter och sedan kopplas in igen
-Då: 100 procent av de 120 positionerna från avbrottet finns i tabellen GpsPoints inom 2 minuter efter återanslutningen
+Givet: en resa pågår och styrenheten skickar position var 15:e sekund
+När: styrenhetens nät stängs av i 30 minuter och sedan slås på igen
+Då: alla 120 positioner från avbrottet (100 procent) finns i tabellen GpsPoints inom 2 minuter
 Nivå: system
 Testtyp: icke-funktionellt, svartlåda
 
 ## Kontrollfrågor
-1. Felet hittas billigast på enhetsnivå eftersom det är ett beräkningsfel i PriceCalculator där 61 sekunder ska räknas som två påbörjade minuter enligt P2, och T1 ligger närmast att fånga det eftersom det testar priset för en given restid; ett nytt enhetstest för 61 sekunder bör läggas till.
-2. T16 var svårast att placera eftersom jag tvekade mellan integration och system: det är bara styrenheter och firmware i en testrigg, men eftersom upplåsning och positionsrapport går hela vägen till backend valde jag system.
+1. Felet hittas billigast med ett enhetstest. Det är ett räknefel i PriceCalculator, för 61 sekunder ska räknas som två påbörjade minuter enligt P2. T1 ligger närmast eftersom det testar pris för en viss tid, men man borde lägga till ett test för 61 sekunder.
+2. T16 var svårast. Jag tvekade mellan integration och system, för det är bara styrenheter i en testrigg. Jag valde system eftersom upplåsning och position går hela vägen till backend.

@@ -10,90 +10,88 @@ Motivering: Kartan är för långsam under belastning (9 sekunder för 300 anvä
 ### K2
 Egenskap: Functional suitability
 Delegenskap: Functional correctness
-Motivering: Kunden debiteras fel belopp eftersom samma resa dras två gånger; dålig täckning (Reliability) utlöser felet men skadan är ett felaktigt resultat.
+Motivering: Kunden får betala två gånger för samma resa, så resultatet blir fel. Dålig täckning startar felet och det har med Reliability att göra, men det värsta är att beloppet blir fel.
 
 ### K3
 Egenskap: Reliability
 Delegenskap: Fault tolerance
-Motivering: Resan ska fortsätta och inga positioner får gå förlorade trots att styrenheten tappar uppkopplingen.
+Motivering: Resan måste fortsätta och inga positioner får försvinna fast styrenheten tappar täckningen.
 
 ### K4
 Egenskap: Interaction capability
 Delegenskap: Learnability
-Motivering: Nya kunder kan inte själva lista ut hur resan avslutas, vilket syns i 40 samtal per vecka till kundtjänst.
+Motivering: Nya kunder hittar inte hur man avslutar resan och ringer kundtjänst 40 gånger i veckan.
 
 ### K5
 Egenskap: Security
 Delegenskap: Confidentiality
-Motivering: En kund kommer åt en annan kunds resedata bara genom att ändra id i adressen, alltså saknas behörighetskontroll.
+Motivering: Man kan se en annan kunds resa bara genom att ändra id i adressen, så behörigheten kontrolleras inte.
 
 ### K6
 Egenskap: Maintainability
 Delegenskap: Modularity
-Motivering: Prisberäkningen är inte separerad från bokningsflödet, så en ändring i den ena riskerar att förstöra den andra.
+Motivering: Prisberäkningen ligger ihop med bokningen, så om man ändrar en sak kan något annat gå sönder.
 
 ### K7
 Egenskap: Flexibility
 Delegenskap: Adaptability
-Motivering: Adminpanelen (S2) anpassar sig inte till teknikernas surfplattor; små knappar påverkar även Interaction capability men grundproblemet är att den inte fungerar på en annan enhetstyp.
+Motivering: Adminpanelen fungerar inte på surfplattorna som teknikerna använder. Små knappar är också Interaction capability, men huvudproblemet är att den inte fungerar på en annan sorts enhet.
 
 ### K8
 Egenskap: Safety
 Delegenskap: Fail safe
-Motivering: Ett överhettat batteri kan orsaka brand, så systemet måste gå till ett säkert läge genom att bryta laddningen och varna (Hazard warning).
+Motivering: Ett för varmt batteri kan börja brinna, så laddningen måste stoppas och teknikerna måste få ett larm.
 
 ### K9
 Egenskap: Compatibility
 Delegenskap: Interoperability
-Motivering: API:et (S3) måste kunna utbyta data med två styrenhetsmodeller som använder olika dataformat.
+Motivering: API:et måste förstå data från två olika styrenheter som skickar olika format.
 
 ### K10
 Egenskap: Flexibility
 Delegenskap: Adaptability
-Motivering: Systemet kan inte anpassas till en ny stad utan kodändringar på tolv ställen; hårdkodade värden påverkar även Maintainability.
+Motivering: Man måste ändra koden på tolv ställen för att lägga till en ny stad. Det påverkar också Maintainability, men det viktigaste är att systemet inte går att anpassa.
 
 ## 2. De fyra viktigaste egenskaperna för CityBike
 
-1. Security: om behörighetskontrollen brister kan kunder se andras resor och positioner, se K5 samt R4 och R11 i avsnitt 6, vilket ger skadeståndsrisk och sanktionsavgift enligt GDPR.
-2. Safety: om laddningen inte bryts vid överhettning kan ett batteri börja brinna och skada människor eller egendom, se K8 och avsnitt 7 där CityBike räknas som tillverkare av styrenheten och därmed bär produktansvaret.
-3. Reliability: om resor och positioner går förlorade vid avbrott vet CityBike inte var cyklarna finns och kan inte debitera rätt, se K3 och avsnitt 4 där styrenheten ska skicka position var 15:e sekund.
-4. Functional suitability: om betalningen räknas fel debiteras kunder dubbelt, vilket ger återbetalningar, klagomål och förlorat förtroende, se K2, prisreglerna P1 till P3 i avsnitt 2 och betalningssteget i avsnitt 4.
+1. Security: om det brister kan kunder se andras resor och var de har varit, se K5 och R4 i avsnitt 6. Det har redan hänt en gång när 2 100 kunders uppgifter skickades till fel adress, se R10. Då kan CityBike få böter enligt GDPR och behöva betala skadestånd.
+2. Safety: om laddningen inte stoppas när batteriet blir för varmt kan det börja brinna och någon kan skadas, se K8. Enligt avsnitt 7 är CityBike ansvarig för styrenheten.
+3. Reliability: om positioner försvinner vet CityBike inte var cyklarna är och kan inte ta rätt betalt, se K3 och avsnitt 4.
+4. Functional suitability: om betalningen blir fel får kunder betala dubbelt och blir missnöjda, se K2 och prisreglerna P1 till P3 i avsnitt 2.
 
 ## 3. Mätbara krav
 
 ### Krav 1: Security
-Krav: 100 procent av API-anrop där en inloggad kund begär en resa som tillhör en annan kund nekas med HTTP-status 403, testat med minst 1000 anrop.
-Mått: andel nekade anrop till andra kunders resor
-Gränsvärde: 100 procent nekade (0 lyckade anrop)
-Mätmetod: automatiserat behörighetstest med två testkonton där resans id byts ut i adressen
+Krav: 100 procent av anropen där en kund försöker öppna en annan kunds resa ska nekas med HTTP-status 403, testat med 1000 anrop.
+Mått: andel nekade anrop
+Gränsvärde: 100 procent nekade
+Mätmetod: automatiskt test med två testkonton där man byter id i adressen
 Hänvisning: K5, R4 i avsnitt 6
 
 ### Krav 2: Safety
-Krav: När batteritemperaturen överstiger 60 °C bryts laddningen inom 5 sekunder och larm når teknikerna inom 60 sekunder.
-Mått: tid från uppmätt temperatur över 60 °C till bruten laddning och till mottaget larm
-Gränsvärde: högst 5 sekunder till bruten laddning, högst 60 sekunder till larm
-Mätmetod: labbtest med simulerad temperaturgivare, 50 upprepningar
+Krav: När batteriet blir varmare än 60 °C ska laddningen stoppas inom 5 sekunder och larmet nå teknikerna inom 60 sekunder.
+Mått: tid till stoppad laddning och tid till larm
+Gränsvärde: högst 5 sekunder och högst 60 sekunder
+Mätmetod: test i labb där temperaturen simuleras, 50 gånger
 Hänvisning: K8, avsnitt 7
 
 ### Krav 3: Reliability
-Krav: Vid avbrott i mobiltäckning på upp till 30 minuter går 0 procent av positionerna förlorade och alla skickas inom 2 minuter efter återanslutning.
-Mått: andel mottagna positioner och tid från återanslutning till sista mottagna position
-Gränsvärde: 100 procent mottagna, högst 2 minuter
-Mätmetod: test i testmiljö där styrenhetens nätverk kopplas bort i 30 minuter under en pågående resa
-Hänvisning: K3, avsnitt 4 och 7
+Krav: Om styrenheten saknar täckning i upp till 30 minuter ska 100 procent av positionerna komma fram inom 2 minuter efter att täckningen kommer tillbaka.
+Mått: andel positioner som kommer fram och tid efter återanslutning
+Gränsvärde: 100 procent, högst 2 minuter
+Mätmetod: test i testmiljön där styrenhetens nät stängs av i 30 minuter under en resa
+Hänvisning: K3, avsnitt 4
 
 ### Krav 4: Functional suitability
-Krav: När samma betalningsbegäran skickas 2 till 5 gånger för en resa debiteras kunden exakt 1 gång i 100 procent av 1000 testfall.
+Krav: Om samma betalning skickas 2 till 5 gånger ska kunden bara debiteras 1 gång, i 100 procent av 1000 testfall.
 Mått: antal debiteringar per resa
-Gränsvärde: 1 debitering per resa (0 dubbeldebiteringar)
-Mätmetod: automatiserat integrationstest som skickar dubblerade betalningsbegäranden med fördröjning och kontrollerar betalningsloggen
+Gränsvärde: 1 debitering per resa
+Mätmetod: automatiskt test som skickar samma betalning flera gånger och kollar betalningsloggen
 Hänvisning: K2, avsnitt 2 och 4
 
 ### Uträkning: tillåten nedtid
-Tillgänglighet 99,7 procent betyder att 0,3 procent av tiden får vara nedtid.
+99,7 procent tillgänglighet betyder att 0,3 procent får vara nedtid.
 30 dagar = 30 × 24 = 720 timmar = 720 × 60 = 43 200 minuter.
-Tillåten nedtid = 43 200 × 0,003 = 129,6 minuter, alltså ungefär 2 timmar och 10 minuter.
+43 200 × 0,003 = 129,6 minuter, alltså ungefär 2 timmar och 10 minuter.
 
 ## 4. Skillnad mot ett annat par
-
-<Skriv 2–3 meningar efter jämförelsen med ett annat par.>
