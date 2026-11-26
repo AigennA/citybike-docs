@@ -8,6 +8,11 @@ public class AgeValidator
     {
         int age = today.Year - birthDate.Year;
 
+        if (today < birthDate.AddYears(age))
+        {
+            age--;
+        }
+
         return age >= AdultAge;
     }
 }
